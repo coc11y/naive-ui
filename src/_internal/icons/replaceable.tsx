@@ -3,7 +3,10 @@ import { defineComponent, inject } from 'vue'
 import type { GlobalIconConfig } from '../../config-provider/src/internal-interface'
 import { configProviderInjectionKey } from '../../config-provider/src/context'
 
-export function replaceable(name: keyof GlobalIconConfig, icon: JSX.Element) {
+export function replaceable(
+  name: keyof GlobalIconConfig,
+  iconRender: () => JSX.Element
+) {
   return defineComponent({
     name: upperFirst(name),
     setup() {
@@ -13,7 +16,7 @@ export function replaceable(name: keyof GlobalIconConfig, icon: JSX.Element) {
       )?.mergedIconsRef
       return () => {
         const iconOverride = mergedIconsRef?.value?.[name]
-        return iconOverride ? iconOverride() : icon
+        return iconOverride ? iconOverride() : iconRender()
       }
     }
   })
